@@ -1,0 +1,45 @@
+services:
+  selenium:
+    build:
+      context: selenium
+      dockerfile: Dockerfile
+    ports:
+      - '7903:7900'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    environment:
+      - SE_SESSION_REQUEST_TIMEOUT=360000  # 100時間（ミリ秒単位）
+      - SE_NODE_SESSION_TIMEOUT=360000     # 100時間（ミリ秒単位）
+      - SE_START_VNC=false
+      - SE_VNC_PASSWORD=secret # CHANGEME
+    volumes:
+      - chrome_profile:/home/seluser/chrome-profile
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.5'
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      selenium:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '0.5'
+
+volumes:
+  chrome_profile:
