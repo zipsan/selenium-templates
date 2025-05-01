@@ -9,13 +9,14 @@ Webサイトの自動化を行う場合によく使うベースのファイル�
     - https://github.com/SeleniumHQ/docker-selenium
 * Python
 * Supercronic (定期実行)
+    - https://github.com/aptible/supercronic
 
 # 設定
 
 ```
 cp ./cron/job.cron.template ./cron/job.cron
 vim ./cron/job.cron
-~~! Edit ~~~
+~~~ Edit ~~~
 ```
 
 # 起動
